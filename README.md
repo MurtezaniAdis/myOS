@@ -1,6 +1,13 @@
 # myOS
 
 This application provides an interactive quiz to help users find the ideal Linux distribution based on a weighted matching algorithm.
+We started off as a team:
+  Melih Güldogdu
+  Cristina Postoronca
+  Maisam Mohammadi
+  Adis Murtezani
+
+But only Adis Murtezani is left
 
 
 ### Prerequisites
