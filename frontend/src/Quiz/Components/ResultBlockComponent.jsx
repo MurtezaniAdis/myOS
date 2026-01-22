@@ -1,11 +1,7 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import {getDistroLogo} from "../SharedComponents/LogoURL.jsx";
+import { getDistroLogo } from "../../SharedComponents/LogoURL.jsx";
 
-function Results({distro}) {
-  const navigate = useNavigate();
-
-  let logoUrl = getDistroLogo(distro)
+export function Results({ distro, onClickDistro }) {
+  let logoUrl = getDistroLogo(distro);
 
   return (
     <div className="card-body">
@@ -13,7 +9,7 @@ function Results({distro}) {
         <img
           src={logoUrl}
           alt={`${distro.name} logo`}
-          referrerPolicy="no-referrer" // This helps bypass some hotlink protections
+          referrerPolicy="no-referrer"
           style={{
             width: "100px",
             height: "100px",
@@ -21,7 +17,6 @@ function Results({distro}) {
             marginBottom: "60px",
             marginTop: "50px",
           }}
-          // Fallback: If image fails, hide the broken icon
           onError={(e) => {
             e.target.style.display = "none";
           }}
@@ -60,14 +55,32 @@ function Results({distro}) {
       <p>
         <strong>Match Score:</strong> {distro.match_score}%
       </p>
-      <button 
-        className="btn btn-primary mt-3"
-        onClick={() => navigate(`/detail/${distro.id}`, { state: { distro, from: 'results' } })}
-      >
+      <button className="btn btn-primary mt-3" onClick={() => onClickDistro()}>
         More Details
       </button>
     </div>
   );
 }
 
-export default Results;
+export function PDFButton({ handleDownloadPDF, isGeneratingPDF }) {
+  return (
+    <button
+      className="btn btn-primary mt-3"
+      onClick={handleDownloadPDF}
+      disabled={isGeneratingPDF}
+    >
+      {isGeneratingPDF ? (
+        <>
+          <span
+            className="spinner-border spinner-border-sm me-2"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Generating PDF...
+        </>
+      ) : (
+        <>Save as PDF</>
+      )}
+    </button>
+  );
+}

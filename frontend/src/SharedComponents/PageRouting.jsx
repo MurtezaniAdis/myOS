@@ -5,18 +5,20 @@ import { AuthProvider } from "./authContext";
 
 const Homepage = lazy(() => import("../EverythingForHomepage/Homepage"));
 const Authpage = lazy(() => import("../EverythingForAuthentication/Authenticationpage"));
-const Quizpage = lazy(() => import("../EverythingForQuizpage/Quizpage"));
-const Resultpage = lazy(() => import("../EverythingForResultpage/Resultpage"));
+
 const Accountpage = lazy(() => import("../EverythingForAccountpage/Accountpage"));
 const AccountpageOtherUsers = lazy(() => import("../EverythingForAccountpage/AccountpageOtherUsers"));
-const Detailpage = lazy(() => import("../EverythingForDetailpage/Detailpage"));
-const Catalogpage = lazy(() => import("../EverythingForCatalogpage/Catalogpage.jsx"));
 const Postpage = lazy(() => import('../EverythingForPostpage/Postpage'));
 const PostReviewpage = lazy(() => import('../EverythingForPostReviewpage/PostReviewpage'));
 const Commentpage = lazy(() => import('../EverythingForCommentpage/Commentpage'));
 const Glossarypage = lazy(() => import("../EverythingForGlossaryPage/GlossaryPage"));
 const Forumpage = lazy(() => import("../EverythingForForumpage/Forumpage"));
 const NotFound = lazy(() => import("./NotFound"));
+
+const Quizpage = lazy(() => import("../Quiz/Pages/Quizpage"));
+const Resultpage = lazy(() => import("../Quiz/Pages/Resultpage"));
+const Detailpage = lazy(() => import("../Quiz/Pages/Detailpage"));
+const Catalogpage = lazy(() => import("../Quiz/Pages/Catalogpage"));
 
 const LoadingFallback = () => (
   <div className="min-h-screen bg-gray-50 d-flex align-items-center justify-content-center">
@@ -36,9 +38,8 @@ function PrefetchPages() {
     const timer = setTimeout(() => {
       if (location.pathname === '/') {
         import("../EverythingForForumpage/Forumpage");
-        import("../EverythingForCatalogpage/Catalogpage");
-        import("../EverythingForQuizpage/Quizpage");
-        import("../EverythingForDetailpage/Detailpage");
+        import("../Quiz/Pages/Catalogpage");
+        import("../Quiz/Pages/Detailpage");
         import("./NotFound");
       }
       

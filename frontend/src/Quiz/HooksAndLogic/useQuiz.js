@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { submitQuiz } from "../Requests/QuizRequests.js";
+import { useNavigate } from "react-router-dom";
 
 export function useQuiz(questions) {
+    const navigate = useNavigate();
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState({});
 
@@ -39,6 +42,19 @@ export function useQuiz(questions) {
 
     const isLastQuestion = currentQuestion === questions.length - 1;
 
+    const handleSubmit = async() => {
+        const result = await submitQuiz(answers);
+
+        if (result.ok) {
+            navigate("/result", {
+                state: { results: result.data.recommendations },
+            });
+        } else {
+            console.error("Submission failed:", result.error);
+            return { success: false, error: result.error };
+        }
+    };
+
     return {
         question,
         currentQuestion,
@@ -48,5 +64,6 @@ export function useQuiz(questions) {
         nextQuestion,
         prevQuestion,
         isLastQuestion,
+        handleSubmit,
     };
 }

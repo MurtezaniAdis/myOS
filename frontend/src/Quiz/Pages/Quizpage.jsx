@@ -1,13 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import NAVBAR from "../SharedComponents/NavbarComponent.jsx";
-import { submitQuiz } from "./QuizRequests.js";
-import { useQuiz } from "./useQuiz.js";
-import Footer from "../SharedComponents/FooterComponent.jsx";
+import NAVBAR from "../../SharedComponents/NavbarComponent.jsx";
+import { useQuiz } from "../HooksAndLogic/useQuiz.js";
+import Footer from "../../SharedComponents/FooterComponent.jsx";
 import {
   QuestionHeader,
   QuestionOptions,
   QuestionButtons,
-} from "./QuizComponents.jsx";
+} from "../Components/QuizComponents.jsx";
 
 const questions = [
   {
@@ -96,20 +94,7 @@ const questions = [
 ];
 
 function Quizpage() {
-  const navigate = useNavigate();
   const quiz = useQuiz(questions);
-
-  const handleQuizSubmit = async () => {
-    const result = await submitQuiz(quiz.answers);
-
-    if (result.ok) {
-      navigate("/result", {
-        state: { results: result.data.recommendations },
-      });
-    } else {
-      alert("Submission failed");
-    }
-  };
 
   return (
     <div className="backgroundForHomepage">
@@ -134,7 +119,7 @@ function Quizpage() {
             isLastQuestion={quiz.isLastQuestion}
             onNext={quiz.nextQuestion}
             onBack={quiz.prevQuestion}
-            onFinish={handleQuizSubmit}
+            onFinish={quiz.handleSubmit}
             questions={questions}
             currentQuestion={quiz.currentQuestion}
           />

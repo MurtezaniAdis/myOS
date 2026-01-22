@@ -1,6 +1,5 @@
 import React from "react";
-import '../pictures/css/button.css';
-
+import "../../pictures/css/button.css";
 
 export function QuestionHeader({ question, currentQuestion, questions }) {
   return (
@@ -22,8 +21,8 @@ export function QuestionOptions({ question, answers, onToggleOption }) {
         return (
           <button
             key={option}
-            className={`btn ${selected ? 'primaryButton' : 'secondaryButton'} px-4 py-2`}
-            style={{ borderRadius: '0.6rem' }}
+            className={`btn ${selected ? "primaryButton" : "secondaryButton"} px-4 py-2`}
+            style={{ borderRadius: "0.6rem" }}
             onClick={() => onToggleOption(option)}
           >
             {option}
@@ -42,10 +41,10 @@ export function QuestionButtons({
   onFinish,
 }) {
   return (
-    <div className='d-flex justify-content-between'>
+    <div className="d-flex justify-content-between">
       <button
-        className='btn btn-outline-secondary px-4 py-2'
-        style={{ borderRadius: '0.6rem' }}
+        className="btn btn-outline-secondary px-4 py-2"
+        style={{ borderRadius: "0.6rem" }}
         onClick={onBack}
         disabled={!onBack}
       >
@@ -54,8 +53,8 @@ export function QuestionButtons({
 
       {isLastQuestion ? (
         <button
-          className='btn btn-success px-4 py-2'
-          style={{ borderRadius: '0.6rem' }}
+          className="btn btn-success px-4 py-2"
+          style={{ borderRadius: "0.6rem" }}
           onClick={onFinish}
           disabled={!hasAnswer}
         >
@@ -63,8 +62,8 @@ export function QuestionButtons({
         </button>
       ) : (
         <button
-          className='btn btn-primary px-4 py-2'
-          style={{ borderRadius: '0.6rem' }}
+          className="btn btn-primary px-4 py-2"
+          style={{ borderRadius: "0.6rem" }}
           onClick={onNext}
           disabled={!hasAnswer}
         >
