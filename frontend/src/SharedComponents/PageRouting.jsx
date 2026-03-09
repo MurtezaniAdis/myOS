@@ -6,19 +6,20 @@ import { AuthProvider } from "./authContext";
 const Homepage = lazy(() => import("../EverythingForHomepage/Homepage"));
 const Authpage = lazy(() => import("../EverythingForAuthentication/Authenticationpage"));
 
-const Accountpage = lazy(() => import("../EverythingForAccountpage/Accountpage"));
-const AccountpageOtherUsers = lazy(() => import("../EverythingForAccountpage/AccountpageOtherUsers"));
-const Postpage = lazy(() => import('../EverythingForPostpage/Postpage'));
-const PostReviewpage = lazy(() => import('../EverythingForPostReviewpage/PostReviewpage'));
-const Commentpage = lazy(() => import('../EverythingForCommentpage/Commentpage'));
+const Accountpage = lazy(() => import("../Accountview/Accountpage"));
+const AccountpageOtherUsers = lazy(() => import("../Accountview/AccountpageOtherUsers"));
 const Glossarypage = lazy(() => import("../EverythingForGlossaryPage/GlossaryPage"));
-const Forumpage = lazy(() => import("../EverythingForForumpage/Forumpage"));
 const NotFound = lazy(() => import("./NotFound"));
 
 const Quizpage = lazy(() => import("../Quiz/Pages/Quizpage"));
 const Resultpage = lazy(() => import("../Quiz/Pages/Resultpage"));
 const Detailpage = lazy(() => import("../Quiz/Pages/Detailpage"));
 const Catalogpage = lazy(() => import("../Quiz/Pages/Catalogpage"));
+
+const Forumpage = lazy(() => import("../Forum/EverythingForForumpage/Forumpage"));
+const Postpage = lazy(() => import('../Forum/EverythingForPostpage/Postpage'));
+const PostReviewpage = lazy(() => import('../Forum/EverythingForPostReviewpage/PostReviewpage'));
+const Commentpage = lazy(() => import('../Forum/EverythingForCommentpage/Commentpage'));
 
 const LoadingFallback = () => (
   <div className="min-h-screen bg-gray-50 d-flex align-items-center justify-content-center">
@@ -37,20 +38,20 @@ function PrefetchPages() {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (location.pathname === '/') {
-        import("../EverythingForForumpage/Forumpage");
+        import("../Forum/EverythingForForumpage/Forumpage");
         import("../Quiz/Pages/Catalogpage");
         import("../Quiz/Pages/Detailpage");
         import("./NotFound");
       }
       
       if (location.pathname === '/forum') {
-        import('../EverythingForPostpage/Postpage');
-        import('../EverythingForPostReviewpage/PostReviewpage');
-        import('../EverythingForCommentpage/Commentpage');
-        import('../EverythingForAccountpage/AccountpageOtherUsers');
+        import('../Forum/EverythingForPostpage/Postpage');
+        import('../Forum/EverythingForPostReviewpage/PostReviewpage');
+        import('../Forum/EverythingForCommentpage/Commentpage');
+        import('../Accountview/AccountpageOtherUsers');
       }
       
-      import("../EverythingForAccountpage/Accountpage");
+      import("../Accountview/Accountpage");
     }, 300);
 
     return () => clearTimeout(timer);

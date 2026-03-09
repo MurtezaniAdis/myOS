@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import NAVBAR from '../SharedComponents/NavbarComponent.jsx';
-import Footer from "../SharedComponents/FooterComponent.jsx";
-import { useAuth } from '../SharedComponents/authContext.jsx';
+import NAVBAR from '../../SharedComponents/NavbarComponent.jsx';
+import { useAuth } from '../../SharedComponents/authContext.jsx';
+import { PostHeader } from './CommentpageComponents.jsx';
 
 function Commentpage() {
   const navigate = useNavigate();
@@ -200,15 +200,12 @@ function Commentpage() {
         className='container d-flex flex-column gap-5'
         style={{ color: '#004E72', marginTop: '8rem', padding: '0rem 10rem' }}
       >
-        {/* Showing Post */}
-        <div className='d-flex flex-column gap-2'>
-          <h4>{post.title}</h4>
-          <div className='d-flex gap-3 mb-3'>
-            <span className='me-5'>{post.author.username}</span>
-            <span>{post.date}</span>
-          </div>
-          <p>{post.content}</p>
-        </div>
+        <PostHeader
+          title={post.title}
+          author={post.author ? post.author.username : 'Deleted User'}
+          date={post.date}
+          content={post.content}
+        />
 
         {/* Write/Edit comment */}
         <div className='d-flex flex-column gap-2'>

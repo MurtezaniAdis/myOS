@@ -2,12 +2,12 @@
 
 This application provides an interactive quiz to help users find the ideal Linux distribution based on a weighted matching algorithm.
 We started off as a team:
-  Melih Güldogdu
-  Cristina Postoronca
-  Maisam Mohammadi
+  Melih Güldogdu,
+  Cristina Postoronca,
+  Maisam Mohammadi and
   Adis Murtezani
 
-But only Adis Murtezani is left
+But I decided to keep working on that project on my own, and try to keep learning on my own.
 
 
 ### Prerequisites

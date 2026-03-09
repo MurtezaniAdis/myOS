@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import NAVBAR from "../SharedComponents/NavbarComponent.jsx";
-import Footer from "../SharedComponents/FooterComponent.jsx";
-import { useAuth } from "../SharedComponents/authContext";
+import NAVBAR from "../../SharedComponents/NavbarComponent.jsx";
+import Footer from "../../SharedComponents/FooterComponent.jsx";
+import { useAuth } from "../../SharedComponents/authContext.jsx";
 
 function PostReviewpage() {
   const navigate = useNavigate();
