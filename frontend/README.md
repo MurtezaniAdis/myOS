@@ -1,1 +1,0 @@
-To start the frontend component: npm run dev
