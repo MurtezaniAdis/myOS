@@ -27,8 +27,17 @@ def main():
         if not (frontend_path / "node_modules" / "lucide-react").exists():
             run_command("npm install", cwd="frontend", shell=True)
 
+    data_file = backend_path / "data" / "os.json"
+
     print("\n--- [3/4] Database Setup ---")
     if (backend_path / "scripts" / "setup_db.py").exists():
+        if not data_file.exists():
+            print("\n--- Generating distro dataset ---")
+            run_command([sys.executable, "-m", "scripts.scraper"], cwd="backend")
+
+        if not data_file.exists():
+            raise FileNotFoundError(f"Missing dataset file: {data_file}. Generate it first with 'python -m scripts.scraper' in backend/")
+
         run_command([sys.executable, "-m", "scripts.enrich_os_data"], cwd="backend")
         run_command([sys.executable, "-m", "scripts.setup_db"], cwd="backend")
 

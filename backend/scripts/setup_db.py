@@ -18,6 +18,7 @@ def setup_and_seed():
 
                 if not DATA_FILE.exists():
                     print(f"❌ Error: {DATA_FILE} not found.")
+                    print("Generate the dataset first with: python -m scripts.scraper")
                     return
 
                 with open(DATA_FILE, 'r', encoding='utf-8') as f:
