@@ -1,9 +1,12 @@
 import Navbar from "../../components/Navbar.jsx";
 import Footer from "../../components/Footer.jsx";
-import { Infobar, Links, Logo } from "./components/DetailComponents.jsx";
-import { useDetail } from "./hooks/useDetail.js";
+import { useLocation } from "react-router-dom";
+import { Infobar, Links, Logo } from "../../features/quiz/components/DetailComponents.jsx";
+import { useDetail } from "../../features/quiz/hooks/useDetail.js";
 
 function DetailPage() {
+  const location = useLocation();
+  const origin = location.state?.from;
   const detail = useDetail();
 
   if (detail.loading || !detail.distro) {

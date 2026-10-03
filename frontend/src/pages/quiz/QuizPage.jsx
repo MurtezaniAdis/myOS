@@ -1,12 +1,12 @@
 import Navbar from "../../components/Navbar.jsx";
 import Footer from "../../components/Footer.jsx";
-import { useQuiz } from "./hooks/useQuiz.js";
+import { useQuiz } from "../../features/quiz/hooks/useQuiz.js";
 import { quizQuestions } from "./quizQuestions.js";
 import {
   QuestionHeader,
   QuestionOptions,
   QuestionButtons,
-} from "./components/QuizComponents.jsx";
+} from "../../features/quiz/components/QuizComponents.jsx";
 
 function QuizPage() {
   const quiz = useQuiz(quizQuestions);

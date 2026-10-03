@@ -1,7 +1,7 @@
 import Footer from "../../components/Footer.jsx";
 import Navbar from "../../components/Navbar.jsx";
-import { Results, PDFButton } from "./components/ResultComponents.jsx";
-import { useResult } from "./hooks/useResult.js";
+import { Results, PDFButton } from "../../features/quiz/components/ResultComponents.jsx";
+import { useResult } from "../../features/quiz/hooks/useResult.js";
 import { useNavigate } from "react-router-dom";
 
 function ResultPage() {

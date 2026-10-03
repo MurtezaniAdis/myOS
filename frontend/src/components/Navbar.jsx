@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import "../styles/Homepage.css";
-import logo from "../assets/images/homepage/logo.png";
+import logo from "../pics/pic1.png";
 import { useAuth } from "../context/AuthContext.jsx";
 
 const DiscordLink = ({ className }) => (

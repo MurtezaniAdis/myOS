@@ -1,16 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import "../../styles/Homepage.css";
 
-import step1 from "../../assets/images/homepage/step1.png";
-import step2 from "../../assets/images/homepage/step2.png";
-import step3 from "../../assets/images/homepage/step3.png";
+import step1 from "../../pics/step1.png";
+import step2 from "../../pics/step2.png";
+import step3 from "../../pics/step3.png";
 
-import windows10 from "../../assets/images/homepage/top5OS/windows10.png";
-import windows11 from "../../assets/images/homepage/top5OS/windows11.png";
-import mint from "../../assets/images/homepage/top5OS/mint.png";
-import ubuntu from "../../assets/images/homepage/top5OS/ubuntu.png";
-import cachyos from "../../assets/images/homepage/top5OS/cachyos.png";
-import forum from "../../assets/images/homepage/forum.png";
+import windows10 from "../../pics/windows.png";
+import windows11 from "../../pics/windows 11.png";
+import mint from "../../pics/mint.png";
+import ubuntu from "../../pics/ubuntu.png";
+import cachyos from "../../pics/cachyos.png";
+import forum from "../../pics/forum.png";
 
 import { useAuth } from "../../context/AuthContext.jsx";
 

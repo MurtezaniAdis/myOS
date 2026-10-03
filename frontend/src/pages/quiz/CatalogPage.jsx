@@ -1,8 +1,8 @@
 import Navbar from "../../components/Navbar.jsx";
 import Footer from "../../components/Footer.jsx";
 import { useNavigate } from "react-router-dom";
-import { Searchbar, AllDistros } from "./components/CatalogComponents.jsx";
-import { useCatalog } from "./hooks/useCatalog.js";
+import { Searchbar, AllDistros } from "../../features/quiz/components/CatalogComponents.jsx";
+import { useCatalog } from "../../features/quiz/hooks/useCatalog.js";
 
 function CatalogPage() {
   const catalog = useCatalog();
