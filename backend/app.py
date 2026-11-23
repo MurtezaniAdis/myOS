@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import datetime, timedelta, timezone
 
 from dotenv import load_dotenv
@@ -71,20 +72,57 @@ CORS(
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 )
 
-database_path = os.getenv("DATABASE_PATH")
-if database_path:
-    app.config["SQLALCHEMY_DATABASE_URI"] = URL.create(
-        "sqlite",
-        database=os.path.abspath(os.path.expanduser(database_path)),
-    )
+database_url = os.getenv("DATABASE_URL", "").strip()
+if database_url:
+    if database_url.startswith("postgres://"):
+        database_url = "postgresql://" + database_url[len("postgres://"):]
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 else:
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+    database_path = os.getenv("DATABASE_PATH")
+    if database_path:
+        app.config["SQLALCHEMY_DATABASE_URI"] = URL.create(
+            "sqlite",
+            database=os.path.abspath(os.path.expanduser(database_path)),
+        )
+    else:
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_pre_ping": True}
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SESSION_PERMANENT"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=1)
 db.init_app(app)
 
 YT_KEY = os.getenv("YOUTUBE_API_KEY")
+
+
+def get_authenticated_user():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return None
+    return db.session.get(User, user_id)
+
+
+def validate_auth_input(username, password, is_login):
+    if not isinstance(username, str) or not isinstance(password, str):
+        return "Invalid input"
+
+    if username.strip() == "" or password.strip() == "":
+        return "Username and password cannot be empty or only spaces!"
+
+    password_length = len(password.encode("utf-16-le", errors="surrogatepass")) // 2
+    if not is_login and password_length < 6:
+        return "Password must be at least 6 characters long!"
+
+    if len(username) > 15 or password_length > 20:
+        return "Stop bullshitting around with long usernames or passwords!"
+
+    if " " in password:
+        return "Password cannot contain spaces!"
+
+    if not re.fullmatch(r"[a-zA-Z0-9_]+", username):
+        return "Username can only contain letters, numbers, and underscores!"
+
+    return None
 
 
 def get_yt_link(distro_name):
@@ -124,9 +162,16 @@ def get_yt_link(distro_name):
 
 @app.route('/auth/register', methods=['POST'])
 def register():
-    data = request.get_json()
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"message": "Invalid input"}), 400
+
     username = data.get('username')
     password = data.get('password')
+
+    validation_error = validate_auth_input(username, password, is_login=False)
+    if validation_error:
+        return jsonify({"message": validation_error}), 400
 
     if User.query.filter_by(username=username).first():
         return jsonify({"message": "Username already exists"}), 400
@@ -142,9 +187,16 @@ def register():
 
 @app.route('/auth/login', methods=['POST'])
 def login():
-    data = request.get_json()
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"message": "Invalid input"}), 400
+
     username = data.get('username')
     password = data.get('password')
+
+    validation_error = validate_auth_input(username, password, is_login=True)
+    if validation_error:
+        return jsonify({"message": validation_error}), 400
 
     user = User.query.filter_by(username=username).first()
 
@@ -236,12 +288,12 @@ def check_auth():
 
 @app.route('/api/user/favorite', methods=['POST'])
 def toggle_favorite():
-    if "user_id" not in session:
+    user = get_authenticated_user()
+    if not user:
         return jsonify({"message": "Not authenticated"}), 401
 
     data = request.get_json()
     distro_id = data.get('distro_id')
-    user = User.query.get(session["user_id"])
 
     if user.favorite_distro_id == distro_id:
         user.favorite_distro_id = None
@@ -256,15 +308,16 @@ def toggle_favorite():
 
 @app.route('/auth/delete/<username>', methods=['DELETE'])
 def delete_account(username):
-    session.clear()
-    user = User.query.filter_by(username=username).first()
-
+    user = get_authenticated_user()
     if not user:
-        return jsonify({"message": "User not found"}), 404
+        return jsonify({"message": "Login required"}), 401
+    if user.username != username:
+        return jsonify({"message": "You can only delete your own account"}), 403
 
     try:
         db.session.delete(user)
         db.session.commit()
+        session.clear()
         return jsonify({"message": "Account deleted successfully"}), 200
     except Exception:
         db.session.rollback()
@@ -288,12 +341,13 @@ def get_posts():
 
 @app.route('/forum/posts', methods=['POST'])
 def create_post():
-    data = request.get_json()
-    username = data.get('username')
-
-    user = User.query.filter_by(username=username).first()
+    user = get_authenticated_user()
     if not user:
-        return jsonify({"message": "User not found"}), 404
+        return jsonify({"message": "Login required"}), 401
+
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"message": "Invalid request body"}), 400
 
     new_post = Post(
         title=data.get('title'),
@@ -354,17 +408,18 @@ def get_user_profile(username):
 
 @app.route('/forum/posts/<int:post_id>/comments', methods=['POST'])
 def add_comment(post_id):
-    if "user_id" not in session:
+    user = get_authenticated_user()
+    if not user:
         return jsonify({"message": "Login required"}), 401
 
     Post.query.get_or_404(post_id)
 
-    data = request.get_json()
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"error": "Invalid request body"}), 400
 
     if not data.get('content'):
         return jsonify({"error": "Content is required"}), 400
-
-    user = User.query.get(session["user_id"])
 
     new_comment = Comment(
         content=data.get('content'),
@@ -432,11 +487,18 @@ def get_single_post(post_id):
 
 @app.route('/forum/posts/<int:post_id>', methods=['PUT'])
 def edit_post(post_id):
-    data = request.get_json()
+    user = get_authenticated_user()
+    if not user:
+        return jsonify({"message": "Login required"}), 401
+
     post = Post.query.get_or_404(post_id)
 
-    if not post.author or post.author.username != data.get('username'):
+    if post.user_id != user.id:
         return jsonify({"message": "You can only edit your own posts!"}), 403
+
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"message": "Invalid request body"}), 400
 
     post.title = data.get('title', post.title)
     post.content = data.get('content', post.content)
@@ -447,10 +509,13 @@ def edit_post(post_id):
 
 @app.route('/forum/posts/<int:post_id>', methods=['DELETE'])
 def delete_post(post_id):
-    data = request.get_json()
+    user = get_authenticated_user()
+    if not user:
+        return jsonify({"message": "Login required"}), 401
+
     post = Post.query.get_or_404(post_id)
 
-    if not post.author or post.author.username != data.get('username'):
+    if post.user_id != user.id:
         return jsonify({"message": "Unauthorized"}), 403
 
     db.session.delete(post)
@@ -460,10 +525,13 @@ def delete_post(post_id):
 
 @app.route('/forum/comments/<int:comment_id>', methods=['DELETE'])
 def delete_comment(comment_id):
-    data = request.get_json()
+    user = get_authenticated_user()
+    if not user:
+        return jsonify({"message": "Login required"}), 401
+
     comment = Comment.query.get_or_404(comment_id)
 
-    if not comment.author or comment.author.username != data.get('username'):
+    if comment.user_id != user.id:
         return jsonify({"message": "Unauthorized"}), 403
 
     db.session.delete(comment)
@@ -473,11 +541,18 @@ def delete_comment(comment_id):
 
 @app.route('/forum/comments/<int:comment_id>', methods=['PUT'])
 def edit_comment(comment_id):
-    data = request.get_json()
+    user = get_authenticated_user()
+    if not user:
+        return jsonify({"message": "Login required"}), 401
+
     comment = Comment.query.get_or_404(comment_id)
 
-    if not comment.author or comment.author.username != data.get('username'):
+    if comment.user_id != user.id:
         return jsonify({"message": "You can only edit your own comments!"}), 403
+
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"message": "Invalid request body"}), 400
 
     new_content = data.get('content')
     if not new_content:

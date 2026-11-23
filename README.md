@@ -9,7 +9,7 @@ I decided to keep working on the project on my own to keep learning.
 
 - **Data pipeline:** scrapes data from DistroWatch and enriches it locally with UI and release-cycle attributes.
 - **Matching logic:** a weighted algorithm evaluates 12 categories. Match scores are normalized and capped at 100%.
-- **Database:** SQLite. To reset it, delete `backend/instance/` and restart the application.
+- **Database:** SQLite locally or PostgreSQL in production. PostgreSQL uses `DATABASE_URL`.
 - **Community:** forum with posts and comments, user profiles, favorite OS.
 
 ## Project Structure
@@ -24,6 +24,7 @@ myos/
 │   ├── scripts/            scraper, data enrichment, DB seeding
 │   └── data/os.json        scraped distro data (input for seeding)
 └── frontend/               React + Vite (port 8080)
+    ├── functions/api/      Cloudflare Pages proxy
     └── src/
         ├── pages/          one folder per feature (home, auth, account, forum, glossary, quiz)
         ├── components/     shared UI (navbar, footer, ...)
@@ -64,7 +65,7 @@ Copy `backend/.env.example` to `backend/.env`. Generate a secret with:
 python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
-Set the generated value as `SECRET_KEY`. Add `YOUTUBE_API_KEY` only if you want to use YouTube Data API lookups. The local CORS origins, cookie settings, and SQLite location can be configured in the same file.
+Set the generated value as `SECRET_KEY`. Add `YOUTUBE_API_KEY` only if you want to use YouTube Data API lookups. Leave `DATABASE_URL` empty for the local SQLite database, or set `DATABASE_PATH` to choose its location.
 
 **3. Launch**
 
@@ -78,10 +79,32 @@ python run_project.py
 
 Frontend only: `cd frontend && npm run dev`.
 
+The Vite development server proxies `/api` to the local Flask server. No frontend API URL override is needed for local development.
+
 ## Production deployment
 
-- Build the frontend with `npm run build` in `frontend`. Set `VITE_API_URL` at build time to the public API URL (for example `https://api.example.com`); it is a public frontend setting, not a place for secrets.
-- Install backend dependencies with `pip install -r requirements-production.txt` from `backend`. This includes Gunicorn; scraper dependencies are kept separate.
-- Configure the server environment with `APP_ENV=production`, a persistent `DATABASE_PATH`, a generated `SECRET_KEY`, the frontend URL in `CORS_ORIGINS`, and `SESSION_COOKIE_SECURE=true`. Keep `SESSION_COOKIE_SAMESITE=Lax` for same-site deployments. Set `SESSION_COOKIE_DOMAIN` only when cookies must be shared across subdomains.
-- Place `backend/data/os.json` on the server, then run `python -m scripts.setup_db` from `backend` once for a fresh database. The script creates the schema and seeds distributions only when that table is empty; it is not a migration tool.
-- Start the API from `backend` with `gunicorn --bind 0.0.0.0:3100 app:app`. Serve it behind HTTPS in production; do not expose Flask's development server.
+### Database
+
+Set `DATABASE_URL` on Render to the PostgreSQL connection string from Neon. `psycopg2-binary` is included in the backend dependencies, and SQLAlchemy checks pooled connections before reusing them.
+
+Render Free does not provide a shell. To initialize a new Neon database, run the seed script from your local machine:
+
+1. Copy `backend/data/os.json` to your local checkout if it is not already present.
+2. Set `DATABASE_URL` in `backend/.env` to the Neon connection string. Keep this file private and out of source control.
+3. From the `backend` directory, run `python -m scripts.setup_db`.
+
+The script creates the schema and seeds distributions only if the table is empty. It is not a migration tool. It uses the same `DATABASE_URL` as the running application.
+
+### Render backend
+
+- Install dependencies with `pip install -r requirements-production.txt` from `backend`.
+- Configure `APP_ENV=production`, `DATABASE_URL`, a generated `SECRET_KEY`, and `SESSION_COOKIE_SECURE=true`.
+- Keep `SESSION_COOKIE_SAMESITE=Lax` and leave `SESSION_COOKIE_DOMAIN` unset when using the Pages proxy.
+- Start the service with `gunicorn --bind 0.0.0.0:$PORT app:app`.
+
+### Cloudflare Pages frontend and API proxy
+
+- Set the Pages project root to `frontend`, build command to `npm run build`, and output directory to `dist`.
+- Set the build environment variable `VITE_API_URL=/api`.
+- Set the Pages Function environment variable `API_ORIGIN` to the Render service origin, such as `https://myos-api.onrender.com` (origin only, no path).
+- The Function in `frontend/functions/api/[[path]].js` forwards `/api/...` requests to Render. The browser therefore talks only to the Pages origin, allowing the session cookie to remain same-origin. Do not set `SESSION_COOKIE_DOMAIN` to the Render domain.

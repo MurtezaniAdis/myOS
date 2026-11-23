@@ -59,11 +59,7 @@ function AccountPage() {
     try {
       const response = await fetch(apiUrl(`/forum/posts/${postId}`), {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         credentials: 'include',
-        body: JSON.stringify(user),
       });
 
       if (response.ok) {

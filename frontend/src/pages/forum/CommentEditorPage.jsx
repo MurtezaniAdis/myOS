@@ -124,7 +124,6 @@ function CommentEditorPage() {
         },
         body: JSON.stringify({
           content: content.trim(),
-          username: user.username,
         }),
       });
 

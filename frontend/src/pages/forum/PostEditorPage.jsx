@@ -78,7 +78,6 @@ function PostEditorPage() {
 
     try {
       const postData = {
-        username: user.username,
         title: title.trim(),
         content: content.trim(),
       };

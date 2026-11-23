@@ -69,11 +69,7 @@ function PostDetailPage() {
         apiUrl(`/forum/posts/${postId}`),
         {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
           credentials: "include",
-          body: JSON.stringify(user),
         },
       );
 
@@ -96,11 +92,7 @@ function PostDetailPage() {
         apiUrl(`/forum/comments/${commentId}`),
         {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
           credentials: "include",
-          body: JSON.stringify(user),
         },
       );
 
