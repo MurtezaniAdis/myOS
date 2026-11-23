@@ -1,6 +1,7 @@
 import os
 import re
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request, session
@@ -14,6 +15,7 @@ from services.distro_loader import load_distros_from_db
 from services.recommender import recommend_distros
 from services.security import get_security_info
 
+load_dotenv(Path(__file__).resolve().parent.parent / ".env.local")
 load_dotenv()
 app = Flask(__name__)
 

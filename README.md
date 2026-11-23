@@ -67,6 +67,8 @@ python -c "import secrets; print(secrets.token_hex(32))"
 
 Set the generated value as `SECRET_KEY`. Add `YOUTUBE_API_KEY` only if you want to use YouTube Data API lookups. Leave `DATABASE_URL` empty for the local SQLite database, or set `DATABASE_PATH` to choose its location.
 
+The backend loads the project-root `.env.local` first (used by the Neon CLI), then the backend `.env`. Existing process environment variables take precedence.
+
 **3. Launch**
 
 The script installs Python and Node dependencies, initializes the database and starts both servers.
@@ -90,10 +92,11 @@ Set `DATABASE_URL` on Render to the PostgreSQL connection string from Neon. `psy
 Render Free does not provide a shell. To initialize a new Neon database, run the seed script from your local machine:
 
 1. Copy `backend/data/os.json` to your local checkout if it is not already present.
-2. Set `DATABASE_URL` in `backend/.env` to the Neon connection string. Keep this file private and out of source control.
+2. Ensure the project-root `.env.local` contains the Neon `DATABASE_URL` (run `neon env pull` if needed). Keep this file private; it is ignored by Git.
 3. From the `backend` directory, run `python -m scripts.setup_db`.
 
 The script creates the schema and seeds distributions only if the table is empty. It is not a migration tool. It uses the same `DATABASE_URL` as the running application.
+For future schema migrations, use Neon's `DATABASE_URL_UNPOOLED` (direct connection); keep the pooled `DATABASE_URL` for normal application traffic.
 
 ### Render backend
 

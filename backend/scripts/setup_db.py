@@ -10,7 +10,7 @@ DATA_FILE = Path(__file__).resolve().parent.parent / "data" / "os.json"
 def setup_and_seed():
     with app.app_context():
         db.create_all()
-        print("✔ Database schema checked/created.")
+        print("Database schema checked/created.")
 
         if Distribution.query.first() is not None:
             print("-> Info: Table already has data. Skipping seeding.")
@@ -60,7 +60,7 @@ def setup_and_seed():
             db.session.rollback()
             raise
 
-        print(f"✔ Success: {count} entries added.")
+        print(f"Success: {count} entries added.")
 
 
 if __name__ == "__main__":
