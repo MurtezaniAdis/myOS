@@ -1,6 +1,8 @@
+import { apiUrl } from "../../api.js";
+
 const URLS = {
-    login: "http://localhost:3100/auth/login",
-    register: "http://localhost:3100/auth/register",
+    login: apiUrl("/auth/login"),
+    register: apiUrl("/auth/register"),
 };
 
 export async function auth(username, password, isLogin) {

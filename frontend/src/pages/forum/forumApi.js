@@ -1,5 +1,7 @@
+import { apiUrl } from "../../api.js";
+
 export async function fetchAllPosts() {
-    const response = await fetch("http://localhost:3100/forum/posts", {
+    const response = await fetch(apiUrl("/forum/posts"), {
         credentials: "include",
     });
 

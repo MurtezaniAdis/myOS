@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { apiUrl } from "../api.js";
 
 const AuthContext = createContext(null);
 
@@ -8,7 +9,7 @@ export function AuthProvider({ children }) {
 
   const checkAuth = async () => {
     try {
-      const res = await fetch("http://localhost:3100/auth/check", {
+      const res = await fetch(apiUrl("/auth/check"), {
         credentials: "include",
       });
       const data = await res.json();
@@ -27,7 +28,7 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await fetch("http://localhost:3100/auth/logout", {
+      await fetch(apiUrl("/auth/logout"), {
         method: "POST",
         credentials: "include",
       });

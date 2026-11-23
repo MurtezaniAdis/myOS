@@ -32,6 +32,11 @@ def main():
     print("\n--- [3/4] Database Setup ---")
     if (backend_path / "scripts" / "setup_db.py").exists():
         if not data_file.exists():
+            print("\n--- Installing scraper dependencies ---")
+            run_command(
+                [sys.executable, "-m", "pip", "install", "-r", "requirements-scraper.txt"],
+                cwd="backend",
+            )
             print("\n--- Generating distro dataset ---")
             run_command([sys.executable, "-m", "scripts.scraper"], cwd="backend")
 

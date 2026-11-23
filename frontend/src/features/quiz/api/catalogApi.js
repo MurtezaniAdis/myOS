@@ -1,5 +1,7 @@
+import { apiUrl } from "../../../api.js";
+
 export async function getDistros() {
-    const response = await fetch("http://localhost:3100/distros", {
+    const response = await fetch(apiUrl("/distros"), {
         credentials: "include",
     });
 

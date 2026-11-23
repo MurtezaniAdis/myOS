@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { apiUrl } from "../../api.js";
 import Navbar from "../../components/Navbar.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 
@@ -24,7 +25,7 @@ function PostEditorPage() {
     setLoadingPost(true);
     try {
       const response = await fetch(
-        `http://localhost:3100/forum/posts/${postId}`,
+        apiUrl(`/forum/posts/${postId}`),
         {
           method: "GET",
           headers: {
@@ -82,11 +83,11 @@ function PostEditorPage() {
         content: content.trim(),
       };
 
-      let url = "http://localhost:3100/forum/posts";
+      let url = apiUrl("/forum/posts");
       let method = "POST";
 
       if (isEditing && id) {
-        url = `http://localhost:3100/forum/posts/${id}`;
+        url = apiUrl(`/forum/posts/${id}`);
         method = "PUT";
       }
 

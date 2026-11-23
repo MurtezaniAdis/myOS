@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiUrl } from "../../api.js";
 import Navbar from "../../components/Navbar.jsx";
 import Footer from "../../components/Footer.jsx";
 import {
@@ -25,7 +26,7 @@ function AccountPage() {
     setPostsError(null);
 
     try {
-      const response = await fetch(`http://localhost:3100/forum/users/${user.username}/posts`, {
+      const response = await fetch(apiUrl(`/forum/users/${user.username}/posts`), {
         method: 'GET',
         credentials: 'include',
       });
@@ -45,7 +46,7 @@ function AccountPage() {
   };
 
   const handleRemoveFavorite = async () => {
-    await fetch('http://localhost:3100/api/user/favorite', {
+    await fetch(apiUrl('/api/user/favorite'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -56,7 +57,7 @@ function AccountPage() {
 
   const handleDeletePost = async (postId) => {
     try {
-      const response = await fetch(`http://localhost:3100/forum/posts/${postId}`, {
+      const response = await fetch(apiUrl(`/forum/posts/${postId}`), {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +106,7 @@ function AccountPage() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3100/auth/delete/${user.username}`, {
+      const response = await fetch(apiUrl(`/auth/delete/${user.username}`), {
         method: 'DELETE',
         credentials: 'include',
       });

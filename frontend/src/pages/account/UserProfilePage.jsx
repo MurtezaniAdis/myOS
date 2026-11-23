@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { apiUrl } from "../../api.js";
 import Navbar from "../../components/Navbar.jsx";
 import Footer from "../../components/Footer.jsx";
 
@@ -20,7 +21,7 @@ function UserProfilePage() {
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:3100/api/users/${username}`, {
+      const response = await fetch(apiUrl(`/api/users/${username}`), {
         method: 'GET',
         credentials: 'include',
       });

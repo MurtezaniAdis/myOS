@@ -1,6 +1,8 @@
+import { apiUrl } from "../../../api.js";
+
 export async function fetchDistroById(id) {
     try {
-        const response = await fetch(`http://localhost:3100/distros/${id}`);
+        const response = await fetch(apiUrl(`/distros/${id}`));
         if (!response.ok) throw new Error("Failed to fetch distro");
         return await response.json();
     } catch (err) {
@@ -11,7 +13,7 @@ export async function fetchDistroById(id) {
 
 export async function toggleFavorite(distroId) {
     try {
-        const response = await fetch("http://localhost:3100/api/user/favorite", {
+        const response = await fetch(apiUrl("/api/user/favorite"), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",

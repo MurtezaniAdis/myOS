@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { apiUrl } from '../../api.js';
 import Navbar from '../../components/Navbar.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { PostHeader } from './CommentComponents.jsx';
@@ -38,7 +39,7 @@ function CommentEditorPage() {
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:3100/forum/posts/${id}`, {
+      const response = await fetch(apiUrl(`/forum/posts/${id}`), {
         method: 'GET',
         credentials: 'include',
       });
@@ -60,7 +61,7 @@ function CommentEditorPage() {
   const fetchCommentForEditing = async (commentId) => {
     setLoadingComment(true);
     try {
-      const response = await fetch(`http://localhost:3100/forum/posts/${postId}/comments`, {
+      const response = await fetch(apiUrl(`/forum/posts/${postId}/comments`), {
         method: 'GET',
         credentials: 'include',
       });
@@ -108,10 +109,10 @@ function CommentEditorPage() {
       let url, method;
 
       if (isEditing && commentId) {
-        url = `http://localhost:3100/forum/comments/${commentId}`;
+        url = apiUrl(`/forum/comments/${commentId}`);
         method = 'PUT';
       } else {
-        url = `http://localhost:3100/forum/posts/${postId}/comments`;
+        url = apiUrl(`/forum/posts/${postId}/comments`);
         method = 'POST';
       }
 

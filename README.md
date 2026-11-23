@@ -58,7 +58,13 @@ source venv/bin/activate
 
 **2. Environment file**
 
-Copy `backend/.env.example` to `backend/.env` and fill in both values: a YouTube Data API key and a random string for `SECRET_KEY`.
+Copy `backend/.env.example` to `backend/.env`. Generate a secret with:
+
+```
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+Set the generated value as `SECRET_KEY`. Add `YOUTUBE_API_KEY` only if you want to use YouTube Data API lookups. The local CORS origins, cookie settings, and SQLite location can be configured in the same file.
 
 **3. Launch**
 
@@ -71,3 +77,11 @@ python run_project.py
 (`python3` on Linux / macOS.) The frontend runs on http://localhost:8080.
 
 Frontend only: `cd frontend && npm run dev`.
+
+## Production deployment
+
+- Build the frontend with `npm run build` in `frontend`. Set `VITE_API_URL` at build time to the public API URL (for example `https://api.example.com`); it is a public frontend setting, not a place for secrets.
+- Install backend dependencies with `pip install -r requirements-production.txt` from `backend`. This includes Gunicorn; scraper dependencies are kept separate.
+- Configure the server environment with `APP_ENV=production`, a persistent `DATABASE_PATH`, a generated `SECRET_KEY`, the frontend URL in `CORS_ORIGINS`, and `SESSION_COOKIE_SECURE=true`. Keep `SESSION_COOKIE_SAMESITE=Lax` for same-site deployments. Set `SESSION_COOKIE_DOMAIN` only when cookies must be shared across subdomains.
+- Place `backend/data/os.json` on the server, then run `python -m scripts.setup_db` from `backend` once for a fresh database. The script creates the schema and seeds distributions only when that table is empty; it is not a migration tool.
+- Start the API from `backend` with `gunicorn --bind 0.0.0.0:3100 app:app`. Serve it behind HTTPS in production; do not expose Flask's development server.

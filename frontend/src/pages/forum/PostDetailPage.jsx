@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { apiUrl } from "../../api.js";
 import Navbar from "../../components/Navbar.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 
@@ -28,11 +29,11 @@ function PostDetailPage() {
 
     try {
       const [postResponse, commentsResponse] = await Promise.all([
-        fetch(`http://localhost:3100/forum/posts/${postId}`, {
+        fetch(apiUrl(`/forum/posts/${postId}`), {
           method: "GET",
           credentials: "include",
         }),
-        fetch(`http://localhost:3100/forum/posts/${postId}/comments`, {
+        fetch(apiUrl(`/forum/posts/${postId}/comments`), {
           method: "GET",
           credentials: "include",
         }),
@@ -65,7 +66,7 @@ function PostDetailPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:3100/forum/posts/${postId}`,
+        apiUrl(`/forum/posts/${postId}`),
         {
           method: "DELETE",
           headers: {
@@ -92,7 +93,7 @@ function PostDetailPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:3100/forum/comments/${commentId}`,
+        apiUrl(`/forum/comments/${commentId}`),
         {
           method: "DELETE",
           headers: {

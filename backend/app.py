@@ -1,11 +1,11 @@
 import os
-import secrets
 from datetime import datetime, timedelta, timezone
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request, session
 from flask_cors import CORS
 from googleapiclient.discovery import build
+from sqlalchemy.engine import URL
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from models import Comment, Distribution, Post, User, db
@@ -15,16 +15,70 @@ from services.security import get_security_info
 
 load_dotenv()
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY', secrets.token_hex(32))
+
+APP_ENV = os.getenv("APP_ENV", "development").strip().lower()
+if APP_ENV not in {"development", "production"}:
+    raise RuntimeError("APP_ENV must be either 'development' or 'production'.")
+
+secret_key = os.getenv("SECRET_KEY")
+if not secret_key:
+    raise RuntimeError("SECRET_KEY must be configured. Generate one with Python's secrets module.")
+
+cors_origins = [
+    origin.strip().rstrip("/")
+    for origin in os.getenv(
+        "CORS_ORIGINS",
+        "http://localhost:8080,http://127.0.0.1:8080",
+    ).split(",")
+    if origin.strip()
+]
+if not cors_origins:
+    raise RuntimeError("CORS_ORIGINS must contain at least one allowed origin.")
+
+session_cookie_samesite = os.getenv("SESSION_COOKIE_SAMESITE", "Lax").strip().lower()
+if session_cookie_samesite not in {"lax", "strict", "none"}:
+    raise RuntimeError("SESSION_COOKIE_SAMESITE must be Lax, Strict, or None.")
+session_cookie_samesite = session_cookie_samesite.capitalize()
+
+session_cookie_secure_value = os.getenv("SESSION_COOKIE_SECURE")
+if session_cookie_secure_value is None:
+    session_cookie_secure = APP_ENV == "production"
+elif session_cookie_secure_value.strip().lower() in {"1", "true", "yes", "on"}:
+    session_cookie_secure = True
+elif session_cookie_secure_value.strip().lower() in {"0", "false", "no", "off"}:
+    session_cookie_secure = False
+else:
+    raise RuntimeError("SESSION_COOKIE_SECURE must be a boolean value.")
+if session_cookie_samesite == "None" and not session_cookie_secure:
+    raise RuntimeError("SESSION_COOKIE_SECURE must be true when SameSite=None.")
+if APP_ENV == "production" and not session_cookie_secure:
+    raise RuntimeError("SESSION_COOKIE_SECURE must be true in production.")
+
+app.config.update(
+    SECRET_KEY=secret_key,
+    DEBUG=APP_ENV == "development",
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SECURE=session_cookie_secure,
+    SESSION_COOKIE_SAMESITE=session_cookie_samesite,
+    SESSION_COOKIE_DOMAIN=os.getenv("SESSION_COOKIE_DOMAIN", "").strip() or None,
+)
+
 CORS(
     app,
-    origins=["http://localhost:8080", "http://127.0.0.1:8080"],
+    origins=cors_origins,
     supports_credentials=True,
     allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 )
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+database_path = os.getenv("DATABASE_PATH")
+if database_path:
+    app.config["SQLALCHEMY_DATABASE_URI"] = URL.create(
+        "sqlite",
+        database=os.path.abspath(os.path.expanduser(database_path)),
+    )
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SESSION_PERMANENT"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=1)
@@ -467,4 +521,4 @@ def get_distro_by_id(distro_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=3100)
+    app.run(debug=APP_ENV == "development", port=3100)
