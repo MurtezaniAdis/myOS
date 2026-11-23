@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiUrl } from '../../api.js';
 import Navbar from '../../components/Navbar.jsx';
+import Footer from '../../components/Footer.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { PostHeader } from './CommentComponents.jsx';
 
@@ -148,12 +149,13 @@ function CommentEditorPage() {
     return (
       <>
         <Navbar />
-        <div style={{ marginTop: '8rem', textAlign: 'center' }}>
+        <main className='container page-container text-center'>
           <div className='spinner-border text-primary' role='status'>
             <span className='visually-hidden'>Loading comment...</span>
           </div>
           <p>Loading comment for editing...</p>
-        </div>
+        </main>
+        <Footer />
       </>
     );
   }
@@ -162,10 +164,11 @@ function CommentEditorPage() {
     return (
       <>
         <Navbar />
-        <div className='container mt-5 text-center'>
+        <main className='container py-5 text-center'>
           <div className='spinner-border' />
           <p>Loading post...</p>
-        </div>
+        </main>
+        <Footer />
       </>
     );
   }
@@ -174,12 +177,13 @@ function CommentEditorPage() {
     return (
       <>
         <Navbar />
-        <div className='container mt-5'>
+        <main className='container page-container'>
           <div className='alert alert-danger'>{error || 'Post nicht gefunden'}</div>
           <button className='btn btn-primary' onClick={() => navigate('/forum')}>
             Back to Forum
           </button>
-        </div>
+        </main>
+        <Footer />
       </>
     );
   }
@@ -188,9 +192,9 @@ function CommentEditorPage() {
     <>
       <Navbar />
 
-      <div
-        className='container d-flex flex-column gap-5'
-        style={{ color: '#004E72', marginTop: '8rem', padding: '0rem 10rem' }}
+      <main
+        className='container page-container d-flex flex-column gap-5'
+        style={{ color: '#004E72' }}
       >
         <PostHeader
           title={post.title}
@@ -215,7 +219,7 @@ function CommentEditorPage() {
               disabled={submitting}
             ></textarea>
           </div>
-          <div className='d-flex flex-row justify-content-end gap-4 mt-3'>
+          <div className='d-flex flex-wrap justify-content-end gap-3 mt-3'>
             <button
               className='secondaryButton px-4 py-2'
               style={{ borderRadius: '0.6rem' }}
@@ -250,7 +254,8 @@ function CommentEditorPage() {
             </button>
           </div>
         </div>
-      </div>
+      </main>
+      <Footer />
     </>
   );
 }

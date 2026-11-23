@@ -84,7 +84,13 @@ function AccountPage() {
   }, [loading, user, navigate]);
 
   if (loading) {
-    return <div className='text-center mt-5'>Loading...</div>;
+    return (
+      <>
+        <Navbar />
+        <main className="container py-5 text-center">Loading...</main>
+        <Footer />
+      </>
+    );
   }
 
   if (!user) {
@@ -124,7 +130,7 @@ function AccountPage() {
     <>
       <Navbar />
 
-      <div className='container' style={{ color: '#004E72', marginTop: '8rem', marginBottom: '4rem' }}>
+      <main className='container page-container' style={{ color: '#004E72' }}>
         <AccountHeader
           username={user.username}
           favoriteOS={user.favorite_os_name}
@@ -135,7 +141,7 @@ function AccountPage() {
         <AccountButtons logout={handleLogout} deleteAccount={handleDeleteAccount} />
 
         <ForumPart posts={userPosts} loading={postsLoading} error={postsError} deletePost={handleDeletePost} navigate={navigate} />
-      </div>
+      </main>
       <Footer />
     </>
   );

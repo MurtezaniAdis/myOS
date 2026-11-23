@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { apiUrl } from "../../api.js";
 import Navbar from "../../components/Navbar.jsx";
+import Footer from "../../components/Footer.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 function PostEditorPage() {
@@ -125,12 +126,13 @@ function PostEditorPage() {
     return (
       <>
         <Navbar />
-        <div style={{ marginTop: "8rem", textAlign: "center" }}>
+        <main className="container page-container text-center">
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading post...</span>
           </div>
           <p>Loading post for editing...</p>
-        </div>
+        </main>
+        <Footer />
       </>
     );
   }
@@ -138,10 +140,7 @@ function PostEditorPage() {
   return (
     <>
       <Navbar />
-      <div
-        className="container d-flex flex-column gap-2"
-        style={{ color: "#004E72", marginTop: "8rem", padding: "0rem 10rem" }}
-      >
+      <main className="container page-container d-flex flex-column gap-2" style={{ color: "#004E72" }}>
         <h3>Post</h3>
         <p>{isEditing ? "Edit your post here:" : "Write your post here:"}</p>
         <div>
@@ -173,7 +172,7 @@ function PostEditorPage() {
             disabled={loading}
           ></textarea>
         </div>
-        <div className="d-flex flex-row justify-content-end gap-4 mt-3">
+        <div className="d-flex flex-wrap justify-content-end gap-3 mt-3">
           <button
             className="secondaryButton px-4 py-2"
             style={{ borderRadius: "0.6rem" }}
@@ -207,7 +206,8 @@ function PostEditorPage() {
             )}
           </button>
         </div>
-      </div>
+      </main>
+      <Footer />
     </>
   );
 }

@@ -67,7 +67,7 @@ export function AccountHeader({ username, favoriteOS, favoriteId, onRemove }) {
 
 export function AccountButtons({ logout, deleteAccount }) {
   return (
-    <div className='d-flex flex-row gap-4 mb-4'>
+    <div className='d-flex flex-wrap gap-3 mb-4'>
       <button
         onClick={logout}
         className='secondaryButton px-4 py-2'

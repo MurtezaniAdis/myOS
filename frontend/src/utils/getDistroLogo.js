@@ -1,3 +1,24 @@
+import windows10Logo from "../pics/windows.png";
+import windows11Logo from "../pics/windows 11.png";
+
+const distrowatchLogos = {
+  "arch linux": "arch",
+  "cachyos": "cachyos",
+  "debian": "debian",
+  "elementary os": "elementary",
+  "endeavouros": "endeavour",
+  "fedora": "fedora",
+  "kubuntu": "kubuntu",
+  "linux mint": "mint",
+  "manjaro": "manjaro",
+  "manjaro linux": "manjaro",
+  "mx linux": "mx",
+  "opensuse": "opensuse",
+  "pop!_os": "popos",
+  "ubuntu": "ubuntu",
+  "zorin os": "zorin",
+};
+
 export const getDistroLogo = (distro) => {
   if (!distro) return "";
 
@@ -5,15 +26,14 @@ export const getDistroLogo = (distro) => {
   const osType = distro.os_type?.toLowerCase() || "";
 
   if (osType === "windows") {
-    if (name.includes("11")) {
-      return "/windows_logos/windows_11.png";
-    } else if (name.includes("10")) {
-      return "/windows_logos/windows_10.svg";
-    } else if (name.includes("2022")) {
-      return "/windows_logos/Windows_Server_2022.png";
-    }
+    return name.includes("11") ? windows11Logo : windows10Logo;
   }
 
-  const identifier = distro.logo_name || distro.name?.toLowerCase().replace(/\s/g, "");
-  return `https://distrowatch.com/images/yvzhuwbpy/${identifier}.png`;
+  const storedSlug = distro.logo_name?.trim();
+  const identifier = distrowatchLogos[name] ||
+    (storedSlug && /^[a-z0-9_-]+$/i.test(storedSlug) ? storedSlug : "");
+
+  return identifier
+    ? `https://distrowatch.com/images/yvzhuwbpy/${identifier}.png`
+    : "";
 };

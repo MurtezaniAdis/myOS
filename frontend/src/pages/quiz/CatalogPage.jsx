@@ -10,22 +10,30 @@ function CatalogPage() {
 
   if (catalog.loading)
     return (
-      <div className="container mt-5 text-center">
-        <div className="spinner-border" />
-      </div>
+      <>
+        <Navbar />
+        <main className="container py-5 text-center">
+          <div className="spinner-border" />
+        </main>
+        <Footer />
+      </>
     );
   if (catalog.error)
     return (
-      <div className="container mt-5">
-        <div className="alert alert-danger">{catalog.error}</div>
-      </div>
+      <>
+        <Navbar />
+        <main className="container page-container">
+          <div className="alert alert-danger">{catalog.error}</div>
+        </main>
+        <Footer />
+      </>
     );
 
   return (
     <>
       <Navbar />
-      <main>
-        <div className="container mt-5">
+      <main className="page-container">
+        <div className="container">
           <h2 className="mb-3">Distro Library</h2>
 
           <Searchbar search={catalog.search} setSearch={catalog.setSearch} />

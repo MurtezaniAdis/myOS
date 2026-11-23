@@ -5,27 +5,25 @@ export function Results({ distro, onClickDistro }) {
 
   return (
     <div className="card-body">
-      <div className="ms-5 d-none d-sm-block">
-        <img
-          src={logoUrl}
-          alt={`${distro.name} logo`}
-          referrerPolicy="no-referrer"
-          style={{
-            width: "100px",
-            height: "100px",
-            objectFit: "contain",
-            marginBottom: "60px",
-            marginTop: "50px",
-          }}
-          onError={(e) => {
-            e.target.style.display = "none";
-          }}
-        />
+      <div className="d-flex justify-content-center justify-content-sm-start mb-3">
+        {logoUrl ? (
+          <img
+            src={logoUrl}
+            alt={`${distro.name} logo`}
+            referrerPolicy="no-referrer"
+            className="result-logo"
+            onError={(e) => {
+              e.target.style.display = "none";
+            }}
+          />
+        ) : (
+          <span className="text-muted">No logo available</span>
+        )}
       </div>
       <h5 className="card-title">{distro.name}</h5>
       <p className="card-text">{distro.description}</p>
       <p>
-        <strong>Category:</strong> {distro.category.split(",").join(", ")}
+        <strong>Category:</strong> {(distro.category || "General purpose").split(",").join(", ")}
       </p>
       <p>
         <strong>Price:</strong> {distro.price}
@@ -53,7 +51,7 @@ export function Results({ distro, onClickDistro }) {
         </a>
       </p>
       <p>
-        <strong>Match Score:</strong> {distro.match_score}%
+        <strong>Match Score:</strong> {distro.match_percent ?? distro.match_score}%
       </p>
       <button className="btn btn-primary mt-3" onClick={() => onClickDistro()}>
         More Details

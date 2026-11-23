@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { apiUrl } from "../../api.js";
 import Navbar from "../../components/Navbar.jsx";
+import Footer from "../../components/Footer.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 function PostDetailPage() {
@@ -142,17 +143,15 @@ function PostDetailPage() {
     return (
       <>
         <Navbar />
-        <div
-          className="container d-flex flex-column gap-3"
-          style={{ color: "#004E72", marginTop: "8rem", padding: "0rem 10rem" }}
-        >
+        <main className="container page-container d-flex flex-column gap-3" style={{ color: "#004E72" }}>
           <div className="text-center py-5">
             <div className="spinner-border text-primary mb-3" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
             <p>Loading post and comments...</p>
           </div>
-        </div>
+        </main>
+        <Footer />
       </>
     );
   }
@@ -161,10 +160,7 @@ function PostDetailPage() {
     return (
       <>
         <Navbar />
-        <div
-          className="container d-flex flex-column gap-3"
-          style={{ color: "#004E72", marginTop: "8rem", padding: "0rem 10rem" }}
-        >
+        <main className="container page-container d-flex flex-column gap-3" style={{ color: "#004E72" }}>
           <div className="alert alert-danger">{error || "Post not found"}</div>
           <button
             className="btn btn-primary"
@@ -172,7 +168,8 @@ function PostDetailPage() {
           >
             Back to Forum
           </button>
-        </div>
+        </main>
+        <Footer />
       </>
     );
   }
@@ -181,16 +178,12 @@ function PostDetailPage() {
     <>
       <Navbar />
 
-      <div
-        className="container d-flex flex-column gap-3"
-        style={{ color: "#004E72", marginTop: "8rem", padding: "0rem 10rem" }}
-      >
+      <main className="container page-container d-flex flex-column gap-3" style={{ color: "#004E72" }}>
         <div className="d-flex flex-column gap-2">
           <h4>{post.title}</h4>
-          <div className="d-flex gap-3 mb-3">
+          <div className="d-flex flex-wrap gap-3 mb-3">
             {post.author?.username && post.author.username !== "Deleted User" ? (
               <span
-                className="me-5"
                 onClick={() => handleUserClick(post.author.username)}
                 style={{
                   cursor: "pointer",
@@ -204,14 +197,14 @@ function PostDetailPage() {
                 {post.author.username}
               </span>
             ) : (
-              <span className="me-5">{post.author?.username || "Deleted User"}</span>
+              <span>{post.author?.username || "Deleted User"}</span>
             )}
             <span>{postDate.date}</span>
             <span>{postDate.time}</span>
           </div>
           <p style={{ whiteSpace: "pre-wrap" }}>{post.content}</p>
 
-          <div className="d-flex flex-row justify-content-end gap-4 mb-4">
+          <div className="d-flex flex-wrap justify-content-end gap-3 mb-4">
             <button
               className="secondaryButton px-4 py-2"
               style={{ borderRadius: "0.6rem" }}
@@ -261,7 +254,7 @@ function PostDetailPage() {
 
                 return (
                   <div key={comment.id} className="border-bottom pb-3">
-                    <div className="d-flex gap-3 mb-2">
+                    <div className="d-flex flex-wrap gap-3 mb-2">
                       {commentAuthor !== "Deleted User" ? (
                         <span
                           className="fw-semibold"
@@ -284,7 +277,7 @@ function PostDetailPage() {
                     </div>
                     <p style={{ whiteSpace: "pre-wrap" }}>{comment.content}</p>
                     {user && comment.author && user.username === comment.author.username && (
-                      <div className="d-flex flex-row justify-content-end gap-3">
+                      <div className="d-flex flex-wrap justify-content-end gap-3">
                         <button
                           className="secondaryButton px-3 py-1"
                           style={{ borderRadius: "0.5rem" }}
@@ -307,7 +300,8 @@ function PostDetailPage() {
             </div>
           )}
         </div>
-      </div>
+      </main>
+      <Footer />
     </>
   );
 }

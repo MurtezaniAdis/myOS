@@ -10,9 +10,11 @@ function ForumPage() {
 
   if (forum.loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-600">Loading forum...</div>
-      </div>
+      <>
+        <Navbar />
+        <main className="container py-5 text-center">Loading forum...</main>
+        <Footer />
+      </>
     );
   }
 
@@ -20,7 +22,7 @@ function ForumPage() {
     <>
       <Navbar />
 
-      <div className="container py-4">
+      <main className="container py-4">
         <div className="row justify-content-center">
           <div className="col-lg-8">
             <ForumHeader
@@ -35,7 +37,7 @@ function ForumPage() {
             />
           </div>
         </div>
-      </div>
+      </main>
       <Footer />
     </>
   );

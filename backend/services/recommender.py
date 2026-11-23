@@ -17,9 +17,10 @@ def recommend_distros(user_answers, all_distros):
             return val[0] if isinstance(val, list) and len(val) > 0 else val
 
         selected_use_case = user_answers.get('use_case', [])
-        if len(selected_use_case) > 0:
-            if selected_use_case[0].lower() in category:
-                score += 20
+        if not isinstance(selected_use_case, list):
+            selected_use_case = [selected_use_case] if selected_use_case else []
+        if any(use_case.lower() in category for use_case in selected_use_case):
+            score += 20
 
         exp = get_first_val('experience')
         if exp == 'Beginner' and distro.get('beginner_friendly'):
@@ -52,10 +53,12 @@ def recommend_distros(user_answers, all_distros):
 
         update_pref = get_first_val('update_frequency')
         is_rolling = distro.get('rolling_release')
-        if update_pref == "Very important (Rolling Release)" and is_rolling:
+        if update_pref == "Rolling Release" and is_rolling:
             score += 10
-        elif update_pref == "Not important (Stable Release)" and not is_rolling:
+        elif update_pref == "Stable Release" and not is_rolling:
             score += 10
+        elif update_pref == "A mix of both":
+            score += 5
 
         design_pref = get_first_val('design')
         if design_pref == "Classic (like Windows)" and distro.get('classic_design'):
@@ -83,22 +86,21 @@ def recommend_distros(user_answers, all_distros):
 
         final_score = min(score, 100)
 
-        if final_score > 0:
-            security_info = get_security_info(distro)
+        security_info = get_security_info(distro)
 
-            scored_results.append({
-                "id": distro.get("id"),
-                "name": distro.get("name"),
-                "description": distro.get("description", "No description"),
-                "match_score": score,
-                "logo_name": distro.get("logo_name"),
-                "match_percent": final_score,
-                "category": distro.get("category"),
-                "security_info": security_info,
-                "image_size": distro.get("image_size"),
-                "download_url": distro.get("download_url"),
-                "price": distro.get("price")
-            })
+        scored_results.append({
+            "id": distro.get("id"),
+            "name": distro.get("name"),
+            "description": distro.get("description", "No description"),
+            "match_score": score,
+            "logo_name": distro.get("logo_name"),
+            "match_percent": final_score,
+            "category": distro.get("category"),
+            "security_info": security_info,
+            "image_size": distro.get("image_size"),
+            "download_url": distro.get("download_url"),
+            "price": distro.get("price")
+        })
 
     scored_results.sort(key=lambda x: x['match_score'], reverse=True)
 

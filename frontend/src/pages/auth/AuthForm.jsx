@@ -28,10 +28,7 @@ function AuthForm({
   }
 
   return (
-    <div
-      className="row w-100 justify-content-center"
-      style={{ marginTop: "11rem" }}
-    >
+    <div className="row auth-form-wrapper justify-content-center">
       <div className="col-md-5 col-lg-4">
         <div className="card shadow-lg border-0 rounded-4 p-4">
           <h3 className="fw-bold mb-2">{title}</h3>

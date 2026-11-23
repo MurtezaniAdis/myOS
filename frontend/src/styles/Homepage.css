@@ -1,10 +1,13 @@
 .myContainer {
-    padding: 10px 300px 10px 300px
+    width: 100%;
+    padding: 0.5rem max(1rem, calc((100% - 1140px) / 2));
 }
 
 .backgroundForHomepage {
     background: linear-gradient(90deg, #fefefe 0%, #b3e5fc 100%);
-    min-height: '100%'
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
 }
 
 .myFont {

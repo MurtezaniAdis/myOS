@@ -61,7 +61,11 @@ export const generateResultsPDF = async (results) => {
       pdf.roundedRect(margin, currentY - 4, 35, 7, 2, 2, "F");
       pdf.setFontSize(10);
       pdf.setTextColor(255, 255, 255);
-      pdf.text(`Match: ${distro.match_score}%`, margin + 3, currentY);
+      pdf.text(
+        `Match: ${distro.match_percent ?? distro.match_score}%`,
+        margin + 3,
+        currentY
+      );
       currentY += 10;
 
       pdf.setFontSize(11);

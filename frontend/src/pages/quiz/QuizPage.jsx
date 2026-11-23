@@ -15,7 +15,7 @@ function QuizPage() {
     <div className="backgroundForHomepage">
       <Navbar />
 
-      <div className="container d-flex align-items-center justify-content-center min-vh-100">
+      <main className="container d-flex flex-grow-1 align-items-center justify-content-center py-5">
         <div className="w-100" style={{ maxWidth: "700px" }}>
           <QuestionHeader
             question={quiz.question}
@@ -37,7 +37,7 @@ function QuizPage() {
             onFinish={quiz.handleSubmit}
           />
         </div>
-      </div>
+      </main>
       <Footer />
     </div>
   );

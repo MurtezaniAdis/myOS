@@ -14,12 +14,12 @@ function DetailPage() {
       <>
         <Navbar />
         <div
-          className="container"
-          style={{ marginTop: "8rem", textAlign: "center" }}
+          className="container page-container text-center"
         >
           <div className="spinner-border text-primary" role="status"></div>
           <p className="mt-2">Loading Operating System...</p>
         </div>
+        <Footer />
       </>
     );
   }
@@ -28,10 +28,7 @@ function DetailPage() {
     <>
       <Navbar />
       <main>
-        <div
-          className="container"
-          style={{ color: "#004E72", marginTop: "8rem" }}
-        >
+        <div className="container page-container" style={{ color: "#004E72" }}>
           <div className="row justify-content-between gap-5 pb-4">
             <div className="col-md-7">
               <Infobar

@@ -27,10 +27,7 @@ function GlossaryPage() {
     <>
       <Navbar />
       <main>
-        <div
-          className="container"
-          style={{ color: "#004E72", marginTop: "8rem", marginBottom: "5rem" }}
-        >
+        <div className="container page-container" style={{ color: "#004E72" }}>
           <h2 className="mb-4">
             <b>Glossary</b>
           </h2>
@@ -49,7 +46,7 @@ function GlossaryPage() {
           <div className="row">
             <div className="col-md-3 mb-4">
               <div
-                className="p-4 rounded-4 sticky-top"
+                className="glossary-toc p-4 rounded-4 sticky-top"
                 style={{ backgroundColor: "#f0f7fa", top: "9rem" }}
               >
                 <h5>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import "../../styles/Homepage.css";
 import Navbar from "../../components/Navbar.jsx";
+import Footer from "../../components/Footer.jsx";
 import AuthForm from "./AuthForm.jsx";
 
 import { auth } from "./authApi.js";
@@ -92,6 +93,7 @@ function AuthPage() {
         errorMessage={errorMessage}
         successMessage={successMessage}
       />
+      <Footer />
     </>
   );
 }

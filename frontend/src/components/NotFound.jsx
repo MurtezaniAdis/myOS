@@ -8,7 +8,7 @@ function NotFound() {
   return (
     <>
       <Navbar />
-      <div className="d-flex flex-column justify-content-center align-items-center vh-100 text-center">
+      <main className="d-flex flex-column flex-grow-1 justify-content-center align-items-center py-5 text-center">
         <h1 className="display-1 text-danger">404</h1>
         <p className="fs-4">Site not found</p>
         <div className="mt-3">
@@ -25,7 +25,7 @@ function NotFound() {
             To Quiz
           </button>
         </div>
-      </div>
+      </main>
       <Footer />
     </>
   );

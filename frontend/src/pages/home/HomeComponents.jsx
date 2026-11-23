@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Homepage.css";
 
@@ -5,14 +6,19 @@ import step1 from "../../pics/step1.png";
 import step2 from "../../pics/step2.png";
 import step3 from "../../pics/step3.png";
 
-import windows10 from "../../pics/windows.png";
-import windows11 from "../../pics/windows 11.png";
-import mint from "../../pics/mint.png";
-import ubuntu from "../../pics/ubuntu.png";
-import cachyos from "../../pics/cachyos.png";
 import forum from "../../pics/forum.png";
 
 import { useAuth } from "../../context/AuthContext.jsx";
+import { getDistros } from "../../features/quiz/api/catalogApi.js";
+import { getDistroLogo } from "../../utils/getDistroLogo.js";
+
+const FEATURED_DISTRO_NAMES = [
+  "Windows 11",
+  "Ubuntu",
+  "Windows 10",
+  "CachyOS",
+  "Linux Mint",
+];
 
 export function HeroBlock() {
   const navigate = useNavigate();
@@ -78,7 +84,7 @@ export function HeroBlock() {
           </div>
         </div>
 
-        <div className="d-flex justify-content-center gap-3">
+        <div className="d-flex flex-wrap justify-content-center gap-3">
           <button
             className="primaryButton px-4 py-2"
             onClick={() => navigate("/quizpage")}
@@ -110,14 +116,43 @@ export function HeroBlock() {
 
 export function TopOsAndForum() {
   const navigate = useNavigate();
+  const [topDistros, setTopDistros] = useState([]);
+  const [isCatalogLoading, setIsCatalogLoading] = useState(true);
+  const [catalogError, setCatalogError] = useState("");
 
-  const topDistros = [
-    { id: 377, name: "Windows 11", img: windows11 },
-    { id: 9, name: "Ubuntu", img: ubuntu },
-    { id: 378, name: "Windows 10", img: windows10 },
-    { id: 1, name: "CachyOS", img: cachyos },
-    { id: 2, name: "Linux Mint", img: mint },
-  ];
+  useEffect(() => {
+    let cancelled = false;
+
+    getDistros()
+      .then((distros) => {
+        if (cancelled) return;
+
+        const byName = new Map(
+          distros.map((distro) => [distro.name.toLowerCase(), distro]),
+        );
+        const preferred = FEATURED_DISTRO_NAMES.map((name) =>
+          byName.get(name.toLowerCase()),
+        ).filter(Boolean);
+        const preferredIds = new Set(preferred.map((distro) => distro.id));
+        const remaining = distros.filter(
+          (distro) => !preferredIds.has(distro.id),
+        );
+
+        setTopDistros([...preferred, ...remaining].slice(0, 5));
+        setIsCatalogLoading(false);
+      })
+      .catch((error) => {
+        console.error("Could not load featured distributions:", error);
+        if (!cancelled) {
+          setCatalogError("Could not load the operating system catalog.");
+          setIsCatalogLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className="container mt-5">
@@ -126,33 +161,53 @@ export function TopOsAndForum() {
       <div className="row align-items-center">
         <div className="col-md-8">
           <div className="row text-center">
-            {topDistros.map((os, index) => (
-              <div
-                className="col-6 col-md-2 mb-4 d-flex flex-column align-items-center"
-                key={os.id}
-                onClick={() => navigate(`/detail/${os.id}`, { state: { from: "home" } })}
-                style={{ cursor: "pointer" }}
-              >
+            {topDistros.map((os, index) => {
+              const logo = getDistroLogo(os);
+
+              return (
                 <div
-                  className="bg-light rounded d-flex justify-content-center align-items-center mb-2"
-                  style={{ width: 80, height: 80 }}
+                  className="col-6 col-md-2 mb-4 d-flex flex-column align-items-center"
+                  key={os.id}
+                  onClick={() => navigate(`/detail/${os.id}`, { state: { from: "home" } })}
+                  style={{ cursor: "pointer" }}
                 >
-                  <img
-                    src={os.img}
-                    alt={os.name}
-                    style={{
-                      maxWidth: "100%",
-                      maxHeight: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
+                  <div
+                    className="bg-light rounded d-flex justify-content-center align-items-center mb-2"
+                    style={{ width: 80, height: 80 }}
+                  >
+                    {logo ? (
+                      <img
+                        src={logo}
+                        alt={os.name}
+                        style={{
+                          maxWidth: "100%",
+                          maxHeight: "100%",
+                          objectFit: "contain",
+                        }}
+                        onError={(event) => {
+                          event.currentTarget.style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <span className="text-muted">{os.name}</span>
+                    )}
+                  </div>
+                  <small>
+                    {index + 1}. {os.name}
+                  </small>
                 </div>
-                <small>
-                  {index + 1}. {os.name}
-                </small>
-              </div>
-            ))}
+              );
+            })}
           </div>
+          {catalogError && (
+            <p className="alert alert-warning">{catalogError}</p>
+          )}
+          {isCatalogLoading && (
+            <p className="text-muted">Loading operating systems...</p>
+          )}
+          {!isCatalogLoading && !catalogError && topDistros.length === 0 && (
+            <p className="text-muted">No operating systems are available yet.</p>
+          )}
         </div>
 
         <div className="col-md-4">

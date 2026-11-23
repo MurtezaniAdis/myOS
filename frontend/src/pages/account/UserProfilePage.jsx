@@ -47,12 +47,12 @@ function UserProfilePage() {
     return (
       <>
         <Navbar />
-        <div className='container text-center mt-5'>
+        <main className='container py-5 text-center'>
           <div className='spinner-border text-primary' role='status'>
             <span className='visually-hidden'>Loading profile...</span>
           </div>
           <p className='mt-3'>Loading user profile...</p>
-        </div>
+        </main>
         <Footer />
       </>
     );
@@ -62,7 +62,7 @@ function UserProfilePage() {
     return (
       <>
         <Navbar />
-        <div className='container' style={{ marginTop: '8rem', marginBottom: '4rem' }}>
+        <main className='container page-container'>
           <div className='alert alert-danger' role='alert'>
             {error}
           </div>
@@ -73,7 +73,7 @@ function UserProfilePage() {
           >
             Back to Forum
           </button>
-        </div>
+        </main>
         <Footer />
       </>
     );
@@ -83,8 +83,8 @@ function UserProfilePage() {
     <>
       <Navbar />
 
-      <div className='container' style={{ color: '#004E72', marginTop: '8rem', marginBottom: '4rem' }}>
-        <div className='d-flex justify-content-between align-items-center mb-4'>
+      <main className='container page-container' style={{ color: '#004E72' }}>
+        <div className='d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4'>
           <h2 className='mb-0'>{profileData.username}'s Profile</h2>
           <button
             onClick={() => navigate('/forum')}
@@ -138,7 +138,7 @@ function UserProfilePage() {
                   <h5>{post.title}</h5>
                   {post.date && <p className='text-muted small mb-2'>Posted on: {post.date}</p>}
                   <p>{post.content}</p>
-                  <div className='d-flex justify-content-between align-items-center'>
+                  <div className='d-flex flex-wrap justify-content-between align-items-center gap-2'>
                     <span className='text-muted small'>
                       {post.comment_count} {post.comment_count === 1 ? 'comment' : 'comments'}
                     </span>
@@ -155,7 +155,7 @@ function UserProfilePage() {
             </div>
           )}
         </div>
-      </div>
+      </main>
       <Footer />
     </>
   );

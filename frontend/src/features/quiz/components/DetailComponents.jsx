@@ -5,7 +5,7 @@ import { getDistroLogo } from "../../../utils/getDistroLogo.js";
 export function Infobar({ distro, isFavorite, handleToggleFavorite }) {
   return (
     <>
-      <h3 className="pb-4">
+      <h3 className="pb-4 d-flex flex-wrap align-items-center gap-2">
         <b>{distro.name}</b>
         <button
           onClick={handleToggleFavorite}
@@ -34,7 +34,7 @@ export function Infobar({ distro, isFavorite, handleToggleFavorite }) {
         {distro.description || "No description available"}
       </p>
 
-      <div className="d-flex gap-5 pb-2">
+      <div className="detail-attributes d-flex gap-5 pb-2 flex-wrap">
         <span>
           Based on:{" "}
           <b>
@@ -50,7 +50,7 @@ export function Infobar({ distro, isFavorite, handleToggleFavorite }) {
           <b>{distro.desktop ? distro.desktop.split(",").join(", ") : "N/A"}</b>
         </span>
       </div>
-      <div className="d-flex gap-5 pb-4">
+      <div className="detail-attributes d-flex gap-5 pb-4 flex-wrap">
         <span>
           Price: <b>{distro.price || "Free"}</b>
         </span>
@@ -127,9 +127,8 @@ export function Logo({ distro }) {
   return (
     <div className="col-md-4 d-flex justify-content-center align-items-start mt-5 mt-md-0">
       <div
+        className="detail-logo-card"
         style={{
-          width: "15rem",
-          height: "15rem",
           backgroundColor: "#f8f9fa",
           display: "flex",
           alignItems: "center",

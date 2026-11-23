@@ -22,7 +22,7 @@ const PostDetailPage = lazy(() => import("../pages/forum/PostDetailPage.jsx"));
 const CommentEditorPage = lazy(() => import("../pages/forum/CommentEditorPage.jsx"));
 
 const LoadingFallback = () => (
-  <div className="min-h-screen bg-gray-50 d-flex align-items-center justify-content-center">
+  <div className="app-loading">
     <div className="text-center">
       <div className="spinner-border text-primary mb-3" role="status" style={{ width: "3rem", height: "3rem" }}>
         <span className="visually-hidden">Loading...</span>
@@ -66,24 +66,26 @@ function AppRoutes() {
       <Suspense fallback={<LoadingFallback />}>
         <AuthProvider>
           <PrefetchPages />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/quizpage" element={<QuizPage />} />
-            <Route path="/result" element={<ResultPage />} />
-            <Route path="/account" element={<AccountPage />} />
-            <Route path="/user/:username" element={<UserProfilePage />} />
-            <Route path="/detail/:id" element={<DetailPage />} />
-            <Route path="/catalog" element={<CatalogPage />} />
-            <Route path="/post" element={<PostEditorPage />} />
-            <Route path="/postEdit/:id" element={<PostEditorPage />} />
-            <Route path="/post/:id" element={<PostDetailPage />} />
-            <Route path="/post/:postId/comment" element={<CommentEditorPage />} />
-            <Route path="/post/:postId/comment/:commentId" element={<CommentEditorPage />} />
-            <Route path="/glossary" element={<GlossaryPage />} />
-            <Route path="/forum" element={<ForumPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <div className="app-shell">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/quizpage" element={<QuizPage />} />
+              <Route path="/result" element={<ResultPage />} />
+              <Route path="/account" element={<AccountPage />} />
+              <Route path="/user/:username" element={<UserProfilePage />} />
+              <Route path="/detail/:id" element={<DetailPage />} />
+              <Route path="/catalog" element={<CatalogPage />} />
+              <Route path="/post" element={<PostEditorPage />} />
+              <Route path="/postEdit/:id" element={<PostEditorPage />} />
+              <Route path="/post/:id" element={<PostDetailPage />} />
+              <Route path="/post/:postId/comment" element={<CommentEditorPage />} />
+              <Route path="/post/:postId/comment/:commentId" element={<CommentEditorPage />} />
+              <Route path="/glossary" element={<GlossaryPage />} />
+              <Route path="/forum" element={<ForumPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
         </AuthProvider>
       </Suspense>
     </ErrorBoundary>

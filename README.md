@@ -89,13 +89,14 @@ The Vite development server proxies `/api` to the local Flask server. No fronten
 
 Set `DATABASE_URL` on Render to the PostgreSQL connection string from Neon. The production requirements include both `psycopg2-binary` and `psycopg[binary]` so SQLAlchemy URLs using either PostgreSQL driver work; SQLAlchemy also checks pooled connections before reusing them.
 
-Render Free does not provide a shell. To initialize a new Neon database, run the seed script from your local machine:
+The bundled `backend/data/os.json` may contain only the 14 built-in fallback distributions. To collect the current active Linux catalog and import it into Neon, run these commands from `backend` on your local machine:
 
-1. Copy `backend/data/os.json` to your local checkout if it is not already present.
-2. Ensure the project-root `.env.local` contains the Neon `DATABASE_URL` (run `neon env pull` if needed). Keep this file private; it is ignored by Git.
-3. From the `backend` directory, run `python -m scripts.setup_db`.
+1. Ensure the project-root `.env.local` contains the Neon `DATABASE_URL` (run `neon env pull` if needed). Keep this file private; it is ignored by Git.
+2. Install backend and scraper dependencies with `python -m pip install -r requirements.txt -r requirements-scraper.txt`.
+3. Generate and enrich the dataset with `python -m scripts.scraper` and `python -m scripts.enrich_os_data`.
+4. Import it with `python -m scripts.setup_db`.
 
-The script creates the schema and seeds distributions only if the table is empty. It is not a migration tool. It uses the same `DATABASE_URL` as the running application.
+The seed script adds new distributions and refreshes matching names without deleting existing rows or changing their IDs. It is not a schema migration tool. It uses the same `DATABASE_URL` as the running application.
 For future schema migrations, use Neon's `DATABASE_URL_UNPOOLED` (direct connection); keep the pooled `DATABASE_URL` for normal application traffic.
 
 ### Render backend
