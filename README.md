@@ -87,7 +87,7 @@ The Vite development server proxies `/api` to the local Flask server. No fronten
 
 ### Database
 
-Set `DATABASE_URL` on Render to the PostgreSQL connection string from Neon. `psycopg2-binary` is included in the backend dependencies, and SQLAlchemy checks pooled connections before reusing them.
+Set `DATABASE_URL` on Render to the PostgreSQL connection string from Neon. The production requirements include both `psycopg2-binary` and `psycopg[binary]` so SQLAlchemy URLs using either PostgreSQL driver work; SQLAlchemy also checks pooled connections before reusing them.
 
 Render Free does not provide a shell. To initialize a new Neon database, run the seed script from your local machine:
 
